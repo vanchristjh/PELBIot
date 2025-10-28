@@ -1,38 +1,155 @@
-.App {
-  text-align: center;
+﻿/* ========== GLOBAL STYLES ========== */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html, body, #root {
+  height: 100%;
+  width: 100%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0a0c11;
+  color: #e0e0e0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* App Wrapper */
+.app-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  width: 100%;
+  min-height: 100vh;
+  background: #0a0c11;
 }
 
-.App-link {
-  color: #61dafb;
+.app-layout {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 70px);
+  gap: 0;
+  overflow: hidden;
+  position: relative;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Main Content */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 28px;
+  background: linear-gradient(135deg, #0a0c11 0%, #0d1117 50%, #0f1419 100%);
+  scroll-behavior: smooth;
+  position: relative;
+  z-index: 1;
+  margin-left: 0;
+  width: 100%;
+}
+
+.main-content::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scrollbar Styling */
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: rgba(0, 212, 255, 0.03);
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(0, 212, 255, 0.4), rgba(0, 212, 255, 0.2));
+  border-radius: 5px;
+  border: 2px solid rgba(0, 212, 255, 0.03);
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(0, 212, 255, 0.6), rgba(0, 212, 255, 0.4));
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .app-layout {
+    height: calc(100vh - 64px);
   }
-  to {
-    transform: rotate(360deg);
+
+  .main-content {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    height: calc(100vh - 64px);
+    position: relative;
+  }
+
+  .main-content {
+    padding: 18px;
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-layout {
+    height: calc(100vh - 60px);
+  }
+
+  .main-content {
+    padding: 12px;
+    margin-left: 0;
+  }
+}
+
+/* ========== TABLET LANDSCAPE ========== */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .app-layout {
+    height: calc(100vh - 60px);
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+}
+
+/* ========== MOBILE LANDSCAPE ========== */
+@media (max-height: 600px) and (orientation: landscape) {
+  .main-content {
+    padding: 12px 16px;
+    overflow-y: auto;
+  }
+
+  .app-layout {
+    height: 100vh;
+  }
+}
+
+/* ========== EXTRA LARGE SCREENS ========== */
+@media (min-width: 1920px) {
+  .main-content {
+    padding: 32px;
+  }
+
+  .app-layout {
+    height: calc(100vh - 70px);
   }
 }

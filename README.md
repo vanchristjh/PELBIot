@@ -1,53 +1,102 @@
-# Getting Started with Create React App
+# 🌟 Pelbiot Energy Management System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive real-time energy monitoring and management platform built with React and Node.js.
 
-## Available Scripts
+## 🚀 Quick Start
 
-In the project directory, you can run:
+### First Time Setup?
+```bash
+# Install dependencies
+npm install
 
-### `npm start`
+# Start backend (in backend folder)
+cd backend
+npm start
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# In another terminal, start frontend
+npm start
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+👉 **Full setup guide:** [Documentation](./docs/setup/)
 
-### `npm test`
+## 📚 Documentation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+All documentation is organized in the **[docs folder](./docs/)**:
 
-### `npm run build`
+| Section | Purpose |
+|---------|---------|
+| **[Setup](./docs/setup/)** | Installation & environment setup |
+| **[Real-Time System](./docs/realtime/)** | Real-time data architecture & latest audit |
+| **[Admin Guide](./docs/admin/)** | User management & administration |
+| **[Features](./docs/features/)** | System features documentation |
+| **[Deployment](./docs/deployment/)** | Production deployment guide |
+| **[Testing](./docs/testing/)** | Testing procedures & test accounts |
+| **[All Docs](./docs/)** | Complete documentation index |
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🆕 Latest: Real-Time System Audit
+Recently completed comprehensive audit of real-time implementation:
+- [📊 Audit Report](./docs/realtime/REALTIME_DATA_AUDIT.md)
+- [📈 Executive Summary](./docs/realtime/REALTIME_EXECUTIVE_SUMMARY.md)
+- [🎯 4-Phase Improvement Plan](./docs/realtime/REALTIME_IMPROVEMENT_PLAN.md)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🏗️ Project Structure
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+pelbiot/
+├── 📚 docs/              ← All documentation
+│   ├── setup/           
+│   ├── admin/            (34+ files)
+│   ├── realtime/         ✨ NEW AUDIT
+│   ├── features/
+│   ├── deployment/
+│   ├── testing/
+│   └── legacy/          (archived)
+│
+├── src/                 ← Frontend (React)
+├── backend/             ← Backend (Node.js/Express)
+├── public/              ← Static assets
+└── build/               ← Production build
+```
 
-### `npm run eject`
+## 🌐 Features
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+✅ Real-time energy monitoring & analytics  
+✅ Multi-page dashboard system  
+✅ Admin & SuperAdmin roles  
+✅ Weather station integration  
+✅ Advanced reporting & load profiling  
+✅ Equipment monitoring (panels, transformers)  
+✅ Socket.IO real-time data streaming  
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🚀 Running the Application
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+# Backend
+cd backend
+npm start
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Frontend (in another terminal)
+npm start
+```
 
-## Learn More
+Application opens at: http://localhost:3000
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📞 Need Help?
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- 📖 **Documentation**: [Browse Docs](./docs/)
+- 🆘 **Issues**: Check [Troubleshooting](./docs/troubleshooting/)
+- 📊 **Features**: See [Features Guide](./docs/features/)
+- 🧪 **Testing**: See [Testing Guide](./docs/testing/)
 
-### Code Splitting
+## 📝 Project Status
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+✅ **Status**: Production Ready  
+✅ **Last Updated**: 29 Oktober 2025  
+✅ **Documentation**: Organized & Complete  
+
+---
+
+**👉 [Explore Full Documentation](./docs/)** to get started!
 
 ### Analyzing the Bundle Size
 

@@ -1,0 +1,4 @@
+﻿.masterdata-container { padding: 20px; background: #1a1f3a; color: white; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 10px; text-align: left; border-bottom: 1px solid #333; }
+th { background: #2a3f5f; }

@@ -1,0 +1,496 @@
+/* ========== ALARM PAGE - ALERT MANAGEMENT ========== */
+
+.alarm-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.alarm-header {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(0, 212, 255, 0.05));
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(0, 212, 255, 0.1);
+}
+
+.alarm-header h1 {
+  font-size: 28px;
+  font-weight: 900;
+  color: #00d4ff;
+  text-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
+  margin: 0 0 8px 0;
+}
+
+.alarm-header p {
+  font-size: 14px;
+  color: #a8b8c8;
+  margin: 0;
+}
+
+.alarm-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card.critical {
+  background: linear-gradient(135deg, rgba(255, 51, 51, 0.12), rgba(255, 51, 51, 0.05));
+  border: 1px solid rgba(255, 51, 51, 0.25);
+}
+
+.stat-card.warning {
+  background: linear-gradient(135deg, rgba(255, 195, 0, 0.12), rgba(255, 195, 0, 0.05));
+  border: 1px solid rgba(255, 195, 0, 0.25);
+}
+
+.stat-card.info {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(0, 212, 255, 0.05));
+  border: 1px solid rgba(0, 212, 255, 0.25);
+}
+
+.stat-card.total {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.12), rgba(0, 255, 136, 0.05));
+  border: 1px solid rgba(0, 255, 136, 0.25);
+}
+
+.stat-icon {
+  font-size: 28px;
+}
+
+.stat-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-card .label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #a8b8c8;
+}
+
+.stat-card .value {
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.stat-card.critical .value { color: #ff3333; }
+.stat-card.warning .value { color: #ffc300; }
+.stat-card.info .value { color: #00d4ff; }
+.stat-card.total .value { color: #00ff88; }
+
+.filter-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 10px 16px;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 8px;
+  color: #a8b8c8;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 13px;
+}
+
+.filter-btn:hover {
+  background: rgba(0, 212, 255, 0.15);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(0, 212, 255, 0.12));
+  color: #00d4ff;
+  box-shadow: 0 6px 16px rgba(0, 212, 255, 0.15);
+}
+
+.alarms-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.no-alarms {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.12), rgba(0, 255, 136, 0.05));
+  border: 1px solid rgba(0, 255, 136, 0.25);
+  border-radius: 12px;
+  color: #00ff88;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.alarm-item {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(0, 212, 255, 0.02));
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.alarm-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 8px 24px rgba(0, 212, 255, 0.15);
+}
+
+.alarm-item.critical {
+  border-color: rgba(255, 51, 51, 0.4);
+  background: linear-gradient(135deg, rgba(255, 51, 51, 0.08), rgba(255, 51, 51, 0.02));
+}
+
+.alarm-item.warning {
+  border-color: rgba(255, 195, 0, 0.4);
+  background: linear-gradient(135deg, rgba(255, 195, 0, 0.08), rgba(255, 195, 0, 0.02));
+}
+
+.alarm-item.acknowledged {
+  opacity: 0.6;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.alarm-indicator {
+  width: 8px;
+  height: 40px;
+  border-radius: 4px;
+}
+
+.alarm-item.critical .alarm-indicator {
+  background: #ff3333;
+  animation: pulse-alarm 1.5s ease-in-out infinite;
+}
+
+.alarm-item.warning .alarm-indicator {
+  background: #ffc300;
+}
+
+@keyframes pulse-alarm {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.alarm-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.alarm-type {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.alarm-item.critical .alarm-type { color: #ff3333; }
+.alarm-item.warning .alarm-type { color: #ffc300; }
+
+.alarm-message {
+  font-size: 14px;
+  font-weight: 700;
+  color: #b8c2cc;
+}
+
+.alarm-time {
+  font-size: 11px;
+  color: #808a95;
+}
+
+.alarm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-ack {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.08));
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 6px;
+  color: #00ff88;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.btn-del {
+  padding: 8px 12px;
+  background: rgba(255, 51, 51, 0.1);
+  border: 1px solid rgba(255, 51, 51, 0.25);
+  border-radius: 6px;
+  color: #ff3333;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+@media (max-width: 1200px) {
+  .alarm-page {
+    gap: 18px;
+  }
+
+  .alarm-header {
+    padding: 20px 18px;
+  }
+
+  .alarm-header h1 {
+    font-size: 24px;
+  }
+
+  .alarm-stats {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .stat-icon {
+    font-size: 24px;
+  }
+
+  .stat-card .value {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .alarm-page {
+    gap: 16px;
+  }
+
+  .alarm-header {
+    padding: 18px 14px;
+    border-radius: 12px;
+  }
+
+  .alarm-header h1 {
+    font-size: 20px;
+  }
+
+  .alarm-header p {
+    font-size: 12px;
+  }
+
+  .alarm-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+    gap: 10px;
+    border-radius: 10px;
+  }
+
+  .stat-icon {
+    font-size: 20px;
+    min-width: 40px;
+  }
+
+  .stat-card .label {
+    font-size: 10px;
+  }
+
+  .stat-card .value {
+    font-size: 16px;
+  }
+
+  .filter-controls {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .alarm-item {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .alarm-header-item {
+    width: 100%;
+  }
+
+  .alarm-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .alarm-page {
+    gap: 12px;
+  }
+
+  .alarm-header {
+    padding: 14px 12px;
+  }
+
+  .alarm-header h1 {
+    font-size: 18px;
+  }
+
+  .alarm-header p {
+    font-size: 11px;
+  }
+
+  .alarm-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .stat-icon {
+    font-size: 18px;
+    min-width: 32px;
+  }
+
+  .stat-card .label {
+    font-size: 9px;
+  }
+
+  .stat-card .value {
+    font-size: 14px;
+  }
+
+  .filter-btn {
+    padding: 6px 10px;
+    font-size: 10px;
+    flex: 1 1 calc(50% - 4px);
+    min-width: 90px;
+  }
+
+  .alarm-item {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .alarm-header-item {
+    width: 100%;
+  }
+
+  .alarm-content {
+    width: 100%;
+  }
+
+  .alarm-actions {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .btn-ack,
+  .btn-del {
+    flex: 1;
+    padding: 6px 8px;
+  }
+}
+
+@media (max-width: 320px) {
+  .alarm-header h1 {
+    font-size: 16px;
+  }
+
+  .stat-card {
+    padding: 10px;
+  }
+
+  .filter-btn {
+    flex: 1 1 100%;
+    padding: 6px 8px;
+  }
+
+  .alarm-item {
+    padding: 8px;
+  }
+}
+
+/* ========== LANDSCAPE MOBILE ========== */
+@media (max-height: 600px) and (orientation: landscape) {
+  .alarm-page {
+    gap: 12px;
+  }
+
+  .alarm-header {
+    padding: 12px 14px;
+  }
+
+  .alarm-header h1 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .alarm-stats {
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .alarm-item {
+    padding: 10px;
+  }
+}
+
+/* ========== EXTRA LARGE SCREENS ========== */
+@media (min-width: 1920px) {
+  .alarm-page {
+    gap: 32px;
+  }
+
+  .alarm-header {
+    padding: 32px 28px;
+  }
+
+  .alarm-header h1 {
+    font-size: 32px;
+  }
+
+  .alarm-stats {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .stat-card {
+    padding: 24px;
+    gap: 18px;
+  }
+
+  .stat-icon {
+    font-size: 32px;
+  }
+
+  .stat-card .value {
+    font-size: 26px;
+  }
+}

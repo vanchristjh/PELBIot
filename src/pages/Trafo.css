@@ -1,0 +1,4 @@
+﻿.trafo-container { padding: 20px; background: #1a1f3a; color: white; }
+.units-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.unit-card { padding: 15px; background: #2a3f5f; border-radius: 8px; }
+.unit-card.active { background: #3a5f8f; }

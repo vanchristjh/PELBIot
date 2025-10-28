@@ -1,0 +1,4 @@
+﻿.laporan-container { padding: 20px; background: #1a1f3a; color: white; }
+.controls-section { margin-bottom: 20px; }
+button { padding: 10px 20px; background: #00d4ff; color: #000; border: none; border-radius: 4px; cursor: pointer; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }

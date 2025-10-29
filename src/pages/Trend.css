@@ -1,61 +1,75 @@
-/* ========== TREND PAGE - HISTORICAL DATA VISUALIZATION ========== */
+/* ========== TREND PAGE - PROFESSIONAL HISTORICAL DATA VISUALIZATION ========== */
+
+@import './CommonStyles.css';
 
 .trend-page {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding: 0;
+  min-height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.6s ease-out;
 }
 
 .trend-header {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(0, 212, 255, 0.05));
   border: 1px solid rgba(0, 212, 255, 0.25);
   border-radius: 16px;
-  padding: 28px 24px;
+  padding: 32px 28px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(0, 212, 255, 0.1);
 }
 
 .trend-header h1 {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 900;
   color: #00d4ff;
   text-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
   margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
 }
 
 .trend-header p {
   font-size: 14px;
   color: #a8b8c8;
   margin: 0;
+  font-weight: 500;
 }
 
 .time-selector {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  margin-top: 16px;
 }
 
 .time-btn {
   padding: 10px 16px;
   background: rgba(0, 212, 255, 0.08);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 2px solid rgba(0, 212, 255, 0.2);
   border-radius: 8px;
-  color: #a8b8c8;
+  color: var(--text-tertiary);
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-normal);
   font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .time-btn:hover {
   background: rgba(0, 212, 255, 0.15);
   border-color: rgba(0, 212, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 .time-btn.active {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(0, 212, 255, 0.12));
-  border-color: rgba(0, 212, 255, 0.6);
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 212, 255, 0.15));
+  border-color: #00d4ff;
   color: #00d4ff;
-  box-shadow: 0 6px 16px rgba(0, 212, 255, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 212, 255, 0.25);
 }
 
 .charts-container {

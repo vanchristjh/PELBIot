@@ -1,37 +1,55 @@
-/* ========== ALARM PAGE - ALERT MANAGEMENT ========== */
+/* ========== ALARM PAGE - PROFESSIONAL ALERT MANAGEMENT ========== */
+
+@import './CommonStyles.css';
+
+:root {
+  --severity-critical: #ff3333;
+  --severity-warning: #ffc300;
+  --severity-info: #00d4ff;
+  --severity-success: #00ff88;
+}
 
 .alarm-page {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding: 0;
+  min-height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.6s ease-out;
 }
 
 .alarm-header {
   background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(0, 212, 255, 0.05));
   border: 1px solid rgba(0, 212, 255, 0.25);
   border-radius: 16px;
-  padding: 28px 24px;
+  padding: 32px 28px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(0, 212, 255, 0.1);
 }
 
 .alarm-header h1 {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 900;
   color: #00d4ff;
   text-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.5px;
 }
 
 .alarm-header p {
   font-size: 14px;
   color: #a8b8c8;
   margin: 0;
+  font-weight: 500;
 }
 
 .alarm-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
+  margin-top: 20px;
 }
 
 .stat-card {
@@ -41,47 +59,63 @@
   align-items: center;
   gap: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid;
+  border-left: 4px solid;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
 }
 
 .stat-card.critical {
-  background: linear-gradient(135deg, rgba(255, 51, 51, 0.12), rgba(255, 51, 51, 0.05));
-  border: 1px solid rgba(255, 51, 51, 0.25);
+  background: linear-gradient(135deg, rgba(255, 51, 51, 0.14), rgba(255, 51, 51, 0.06));
+  border-color: rgba(255, 51, 51, 0.3);
+  border-left-color: #ff3333;
 }
 
 .stat-card.warning {
-  background: linear-gradient(135deg, rgba(255, 195, 0, 0.12), rgba(255, 195, 0, 0.05));
-  border: 1px solid rgba(255, 195, 0, 0.25);
+  background: linear-gradient(135deg, rgba(255, 195, 0, 0.14), rgba(255, 195, 0, 0.06));
+  border-color: rgba(255, 195, 0, 0.3);
+  border-left-color: #ffc300;
 }
 
 .stat-card.info {
-  background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(0, 212, 255, 0.05));
-  border: 1px solid rgba(0, 212, 255, 0.25);
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.14), rgba(0, 212, 255, 0.06));
+  border-color: rgba(0, 212, 255, 0.3);
+  border-left-color: #00d4ff;
 }
 
 .stat-card.total {
-  background: linear-gradient(135deg, rgba(0, 255, 136, 0.12), rgba(0, 255, 136, 0.05));
-  border: 1px solid rgba(0, 255, 136, 0.25);
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.14), rgba(0, 255, 136, 0.06));
+  border-color: rgba(0, 255, 136, 0.3);
+  border-left-color: #00ff88;
 }
 
 .stat-icon {
-  font-size: 28px;
+  font-size: 32px;
+  min-width: 48px;
+  text-align: center;
+  filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.3));
 }
 
 .stat-card > div {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .stat-card .label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   color: #a8b8c8;
+  letter-spacing: 0.8px;
 }
 
 .stat-card .value {
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 900;
 }
 

@@ -1,11 +1,10 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { apiService, socketService } from '../services/apiService';
 import './Report.css';
 
 const Report = () => {
   const [socketConnected, setSocketConnected] = useState(false);
-  const [reports, setReports] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [startDate, setStartDate] = useState(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
@@ -17,10 +16,12 @@ const Report = () => {
         if (res.data) {
           const data = res.data.map((d, i) => ({ day: i + 1, energy: parseFloat(d.energy) || 0, cost: parseFloat(d.cost) || 0 }));
           setChartData(data);
+        } else {
+          setChartData([]);
         }
-      } catch {
-        const mock = Array.from({ length: 7 }, (_, i) => ({ day: i + 1, energy: Math.random() * 100 + 50, cost: Math.random() * 500 + 200 }));
-        setChartData(mock);
+      } catch (err) {
+        console.error('Error generating report:', err);
+        setChartData([]);
       }
     };
     fetch();

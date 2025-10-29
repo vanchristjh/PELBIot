@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { apiService, socketService } from '../services/apiService';
 import './MasterData.css';
 
@@ -31,14 +31,7 @@ const MasterData = () => {
       } catch (err) {
         console.error('Error fetching devices:', err);
         setError('Gagal memuat data devices: ' + (err.response?.statusText || err.message));
-        
-        // Fallback dengan sample data
-        setDevices([
-          { id: 1, name: 'Device Panel Utama', status: 'Active', location: 'Lantai 1', type: 'Panel' },
-          { id: 2, name: 'Device Trafo Unit 1', status: 'Active', location: 'Ruang Teknis', type: 'Transformer' },
-          { id: 3, name: 'Device Weather Station', status: 'Active', location: 'Rooftop', type: 'Sensor' },
-          { id: 4, name: 'Device Panel Cabang A', status: 'Standby', location: 'Lantai 2', type: 'Panel' }
-        ]);
+        setDevices([]);
       } finally {
         setLoading(false);
       }

@@ -1,0 +1,104 @@
+name: Performance Testing
+
+on:
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 3 * * 0' # Weekly on Sunday at 3 AM UTC
+
+jobs:
+  performance-test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: pelbiot_test
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup test database
+        run: npm run db:migrate:test || true
+
+      - name: Start application
+        run: npm start &
+        env:
+          NODE_ENV: test
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_NAME: pelbiot_test
+          DB_USER: root
+          DB_PASSWORD: root
+
+      - name: Wait for application to start
+        run: sleep 5
+
+      - name: Run performance tests
+        run: npm run test:performance --if-present
+        continue-on-error: true
+
+      - name: Run load tests with Artillery
+        run: |
+          npm install -g artillery
+          artillery run ./tests/load-test.yml --output performance-results.json
+        continue-on-error: true
+
+      - name: Generate performance report
+        run: |
+          npm install -g artillery
+          artillery report --output performance-report.html performance-results.json
+        continue-on-error: true
+
+      - name: Upload performance reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: performance-reports
+          path: |
+            performance-results.json
+            performance-report.html
+          retention-days: 30
+
+      - name: Comment on PR with results
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('performance-results.json', 'utf8'));
+            
+            const comment = `## Performance Test Results
+            
+            - Response Time: ${results.p95} ms (p95)
+            - Requests/sec: ${results.rps}
+            - Error Rate: ${results.errorRate}%
+            
+            [Full Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

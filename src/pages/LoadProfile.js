@@ -1,5 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { apiService, socketService } from '../services/apiService';
 import './LoadProfile.css';
 
@@ -19,10 +19,14 @@ const LoadProfile = () => {
           const peak = Math.max(...vals);
           const avg = vals.reduce((a, b) => a + b) / vals.length;
           setStats({ peak, avg: avg.toFixed(1), min: Math.min(...vals), factor: ((avg / peak) * 100).toFixed(1) });
+        } else {
+          setProfileData([]);
+          setStats({ peak: 0, avg: 0, min: 0, factor: 0 });
         }
-      } catch {
-        const mock = Array.from({ length: 24 }, (_, i) => ({ hour: i + ':00', load: Math.random() * 80 + 20 }));
-        setProfileData(mock);
+      } catch (err) {
+        console.error('Error fetching load profile:', err);
+        setProfileData([]);
+        setStats({ peak: 0, avg: 0, min: 0, factor: 0 });
       }
     };
     fetch();

@@ -1,5 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { apiService, socketService } from '../services/apiService';
 import './Trend.css';
 
@@ -8,7 +8,6 @@ const Trend = () => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [trendData, setTrendData] = useState([]);
   const [stats, setStats] = useState({ avg: 0, max: 0, min: 0 });
-  const [metric, setMetric] = useState('power');
 
   useEffect(() => {
     const fetch = async () => {
@@ -19,14 +18,18 @@ const Trend = () => {
         if (data.length) {
           const vals = data.map(d => d.value);
           setStats({ avg: (vals.reduce((a, b) => a + b) / vals.length).toFixed(2), max: Math.max(...vals), min: Math.min(...vals) });
+        } else {
+          setTrendData([]);
+          setStats({ avg: 0, max: 0, min: 0 });
         }
-      } catch {
-        const mock = Array.from({ length: 7 }, (_, i) => ({ day: i + 1, value: Math.random() * 100 }));
-        setTrendData(mock);
+      } catch (err) {
+        console.error('Error fetching trend data:', err);
+        setTrendData([]);
+        setStats({ avg: 0, max: 0, min: 0 });
       } finally { setLoading(false); }
     };
     fetch();
-  }, [metric]);
+  }, []);
 
   useEffect(() => {
     socketService.on('connect', () => setSocketConnected(true));

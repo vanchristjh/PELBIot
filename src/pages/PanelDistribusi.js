@@ -18,11 +18,13 @@ const PanelDistribusi = () => {
         if (response.data && Array.isArray(response.data)) {
           setPanels(response.data);
           if (response.data.length > 0) setSelectedPanel(response.data[0].id);
+        } else {
+          setPanels([]);
+          console.warn('No panel data available');
         }
       } catch (err) {
-        console.error('Error:', err);
-        setPanels([{ id: 1, nama: 'Panel Utama', lokasi: 'Lantai 1', energi: 12.5, tegangan: 380, arus: 35.2, daya: 12.8, status: 'online', beban: 68 }]);
-        setSelectedPanel(1);
+        console.error('Error fetching panels:', err);
+        setPanels([]);
       } finally {
         setLoading(false);
       }

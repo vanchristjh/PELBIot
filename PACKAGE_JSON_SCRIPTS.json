@@ -1,0 +1,54 @@
+
+{
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "NODE_ENV=development nodemon backend/server.js",
+    "build": "npm install && npm run lint",
+    "lint": "eslint backend --fix --ignore-path .gitignore",
+    "test": "jest --watchAll=false",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --watchAll=false",
+    "test:verbose": "jest --verbose --watchAll=false",
+    "test:mobile": "jest tests/mobileApp.test.js --watchAll=false",
+    "test:integrations": "jest tests/integrations.test.js --watchAll=false",
+    "test:analytics": "jest tests/analytics.test.js --watchAll=false",
+    "test:aiml": "jest tests/aiml.test.js --watchAll=false",
+    "test:all": "jest --coverage --watchAll=false",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "lint:report": "eslint backend --format json > eslint-report.json",
+    "security:audit": "npm audit",
+    "security:check": "npm audit --audit-level=moderate",
+    "db:migrate": "node backend/utils/migrate.js",
+    "db:migrate:test": "NODE_ENV=test node backend/utils/migrate.js",
+    "db:seed": "node backend/utils/seedData.js",
+    "logs:view": "tail -f logs/info.log",
+    "logs:errors": "tail -f logs/error.log",
+    "logs:clear": "rm -f logs/*.log",
+    "verify:env": "node -e \"import('./backend/config/environment.js').then(m => { m.validateEnvironment(); console.log('✅ Environment validated'); })\"",
+    "verify:setup": "npm run verify:env && npm run test -- --listTests",
+    "performance:test": "artillery run tests/load-test.yml",
+    "performance:report": "artillery run tests/load-test.yml --output results.json && artillery report results.json"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "@babel/core": "^7.22.0",
+    "@babel/preset-env": "^7.22.0",
+    "babel-jest": "^29.0.0",
+    "nodemon": "^3.0.0",
+    "eslint": "^8.40.0",
+    "artillery": "^2.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": false,
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/tests/setup.js"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.js",
+      "**/?(*.)+(spec|test).js"
+    ]
+  }
+}

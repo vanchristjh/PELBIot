@@ -1,0 +1,107 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build --if-present
+
+      - name: Run security checks
+        run: npm audit --audit-level=moderate || true
+
+      - name: Create deployment artifact
+        run: |
+          tar -czf pelbiot-deploy-${{ github.sha }}.tar.gz \
+            backend/ \
+            public/ \
+            package.json \
+            package-lock.json
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          port: 22
+          script: |
+            cd /var/www/pelbiot
+            
+            # Stop current application
+            pm2 stop pelbiot || true
+            
+            # Download artifact
+            wget -q https://github.com/${{ github.repository }}/releases/download/${{ github.ref }}/pelbiot-deploy-${{ github.sha }}.tar.gz
+            
+            # Extract and install
+            tar -xzf pelbiot-deploy-${{ github.sha }}.tar.gz
+            npm ci --production
+            
+            # Database migrations (if applicable)
+            npm run migrate --if-present
+            
+            # Start application
+            pm2 start ecosystem.config.js
+            
+            # Cleanup
+            rm pelbiot-deploy-${{ github.sha }}.tar.gz
+
+      - name: Health check
+        run: |
+          sleep 10
+          curl -f http://${{ secrets.DEPLOY_HOST }}:3001/api/enhancements/health || exit 1
+
+      - name: Create deployment status
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          script: |
+            github.rest.deployments.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ job.id }},
+              state: '${{ job.status }}',
+              environment_url: 'https://${{ secrets.DEPLOY_HOST }}',
+              description: 'Deployment ${{ job.status }}'
+            });
+
+      - name: Notify Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'PELBIOT Deployment ${{ job.status }}'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+          fields: repo,message,commit,author

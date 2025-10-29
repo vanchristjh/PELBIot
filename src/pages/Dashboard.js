@@ -10,32 +10,61 @@ import './Dashboard.css';
 const Dashboard = () => {
   const { isSuperAdmin } = useRoleCheck();
   
+  // Initialize with empty values - will be populated from API
   const [metrics, setMetrics] = useState({
-    totalEnergiHari: 45.8,
-    totalBiaya: 57250000,
-    panelAktif: 3,
-    panelTotal: 5,
-    voltageSekarang: 380,
-    arusSekarang: 125.5,
-    dayaSekarang: 45.8,
+    totalEnergiHari: 0,
+    totalBiaya: 0,
+    panelAktif: 0,
+    panelTotal: 0,
+    voltageSekarang: 0,
+    arusSekarang: 0,
+    dayaSekarang: 0,
     lastUpdate: new Date()
   });
 
   const [chartData, setChartData] = useState([]);
-  const [panelStatus] = useState([
-    { name: 'Panel Utama', value: 68, fill: '#00d4ff' },
-    { name: 'Panel A', value: 45, fill: '#00ff88' },
-    { name: 'Panel B', value: 58, fill: '#ffaa00' },
-    { name: 'Panel C', value: 32, fill: '#00d4ff' },
-    { name: 'Panel D', value: 52, fill: '#00ff88' }
-  ]);
+  const [panelStatus, setPanelStatus] = useState([]);
   const [socketConnected, setSocketConnected] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch initial data
+  // Fetch real data from API on mount
   useEffect(() => {
-    const fetchInitialData = async () => {
+    const fetchRealData = async () => {
       try {
+        // Fetch all panels
+        const panelsResponse = await apiService.panels.getAll();
+        const panelsData = panelsResponse.data || [];
+        
+        // Count online panels
+        const onlinePanels = panelsData.filter(p => p.status === 'online');
+        
+        // Calculate panel status distribution
+        const status = panelsData.map(p => ({
+          name: p.name || `Panel ${p.id}`,
+          value: p.power ? Math.min((p.power / 20000) * 100, 100) : 0,
+          fill: p.status === 'online' ? '#00ff88' : '#ff6b6b',
+          id: p.id
+        }));
+        
+        // Calculate total energy and cost
+        const totalPower = panelsData.reduce((sum, p) => sum + (p.power || 0), 0);
+        const totalCost = totalPower * 1250; // Rp 1250 per watt
+        
+        // Set real metrics
+        setMetrics(prev => ({
+          ...prev,
+          panelAktif: onlinePanels.length,
+          panelTotal: panelsData.length,
+          voltageSekarang: panelsData[0]?.voltage || 0,
+          arusSekarang: panelsData[0]?.ampere || 0,
+          dayaSekarang: totalPower || 0,
+          totalEnergiHari: totalPower / 1000, // Convert to kWh
+          totalBiaya: totalCost
+        }));
+        
+        setPanelStatus(status);
+        
+        // Fetch historical chart data
         const response = await apiService.data.getHistory(24);
         if (response.data && Array.isArray(response.data)) {
           const formattedData = response.data.slice(-48).map((item) => ({
@@ -48,13 +77,18 @@ const Dashboard = () => {
         }
       } catch (err) {
         console.error('Error fetching data:', err);
-        setError('Failed to fetch initial data');
+        setError('Failed to fetch dashboard data');
       }
     };
-    fetchInitialData();
+    
+    fetchRealData();
+    
+    // Refresh data every 30 seconds
+    const interval = setInterval(fetchRealData, 30000);
+    return () => clearInterval(interval);
   }, []);
 
-  // Real-time updates via Socket.IO
+  // Real-time updates via Socket.IO (both traditional dan MQTT)
   useEffect(() => {
     const handleAmperUpdate = (data) => {
       setMetrics((prev) => ({
@@ -79,6 +113,55 @@ const Dashboard = () => {
       });
     };
 
+    // MQTT Events via Socket.IO
+    const handleMQTTVoltageUpdate = (data) => {
+      console.log('📡 MQTT Voltage Update:', data.value);
+      setMetrics((prev) => ({
+        ...prev,
+        voltageSekarang: parseFloat(data.value) || prev.voltageSekarang,
+        lastUpdate: new Date()
+      }));
+    };
+
+    const handleMQTTAmpereUpdate = (data) => {
+      console.log('📡 MQTT Ampere Update:', data.value);
+      setMetrics((prev) => ({
+        ...prev,
+        arusSekarang: parseFloat(data.value) || prev.arusSekarang,
+        lastUpdate: new Date()
+      }));
+    };
+
+    const handleMQTTPowerUpdate = (data) => {
+      console.log('📡 MQTT Power Update:', data.value);
+      setMetrics((prev) => ({
+        ...prev,
+        dayaSekarang: parseFloat(data.value) || prev.dayaSekarang,
+        totalEnergiHari: prev.totalEnergiHari + (parseFloat(data.value) || 0) / 3600,
+        lastUpdate: new Date()
+      }));
+
+      // Update chart
+      setChartData((prev) => {
+        const newData = [...prev, {
+          time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+          power: parseFloat(data.value) || 0,
+          ampere: metrics.arusSekarang,
+          voltage: metrics.voltageSekarang
+        }];
+        return newData.slice(-48);
+      });
+    };
+
+    const handleMQTTCostUpdate = (data) => {
+      console.log('📡 MQTT Cost Update:', data.value);
+      setMetrics((prev) => ({
+        ...prev,
+        totalBiaya: parseFloat(data.value) || prev.totalBiaya,
+        lastUpdate: new Date()
+      }));
+    };
+
     const handleConnect = () => {
       console.log('✅ Dashboard connected to Socket.IO');
       setSocketConnected(true);
@@ -90,16 +173,38 @@ const Dashboard = () => {
       setSocketConnected(false);
     };
 
+    const handleMQTTConnected = () => {
+      console.log('✅ MQTT Broker Connected');
+      setSocketConnected(true);
+    };
+
+    const handleMQTTError = (error) => {
+      console.error('❌ MQTT Error:', error);
+    };
+
+    // Register all handlers
     socketService.on('ampere-data-update', handleAmperUpdate);
+    socketService.on('mqtt-voltage-update', handleMQTTVoltageUpdate);
+    socketService.on('mqtt-ampere-update', handleMQTTAmpereUpdate);
+    socketService.on('mqtt-power-update', handleMQTTPowerUpdate);
+    socketService.on('mqtt-cost-update', handleMQTTCostUpdate);
     socketService.on('connect', handleConnect);
     socketService.on('disconnect', handleDisconnect);
+    socketService.on('mqtt-connected', handleMQTTConnected);
+    socketService.on('mqtt-error', handleMQTTError);
 
     return () => {
       socketService.off('ampere-data-update', handleAmperUpdate);
+      socketService.off('mqtt-voltage-update', handleMQTTVoltageUpdate);
+      socketService.off('mqtt-ampere-update', handleMQTTAmpereUpdate);
+      socketService.off('mqtt-power-update', handleMQTTPowerUpdate);
+      socketService.off('mqtt-cost-update', handleMQTTCostUpdate);
       socketService.off('connect', handleConnect);
       socketService.off('disconnect', handleDisconnect);
+      socketService.off('mqtt-connected', handleMQTTConnected);
+      socketService.off('mqtt-error', handleMQTTError);
     };
-  }, []);
+  }, [metrics]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat('id-ID', {
@@ -254,15 +359,24 @@ const Dashboard = () => {
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: '20px',
-        padding: '10px 20px',
+        padding: '15px 20px',
         background: 'rgba(0, 212, 255, 0.05)',
         borderRadius: '10px',
         border: '1px solid rgba(0, 212, 255, 0.2)'
       }}>
-        <span>📊 Super Admin Dashboard (Full Access)</span>
-        <span style={{ color: statusColor, fontWeight: 'bold' }}>
-          {socketConnected ? '🟢 Connected' : '🔴 Disconnected'}
-        </span>
+        <div>
+          <span>📊 Super Admin Dashboard (Full Access)</span>
+          <div style={{ fontSize: '11px', color: '#a8b8c8', marginTop: '5px' }}>
+            Socket.IO: <span style={{color: statusColor, fontWeight: 'bold'}}>
+              {socketConnected ? '🟢 Connected' : '🔴 Disconnected'}
+            </span>
+            {' | '}
+            MQTT: <span style={{color: '#ffa500', fontWeight: 'bold'}}>📡 Ready</span>
+          </div>
+        </div>
+        <div style={{ textAlign: 'right', fontSize: '12px', color: '#a8b8c8' }}>
+          <div>Last Update: {metrics.lastUpdate.toLocaleTimeString('id-ID')}</div>
+        </div>
       </div>
 
       {/* Summary Cards */}

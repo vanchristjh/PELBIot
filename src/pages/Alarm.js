@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { apiService, socketService } from '../services/apiService';
 import './Alarm.css';
 
@@ -13,8 +13,10 @@ const Alarm = () => {
       try {
         const res = await apiService.alerts.getActive();
         if (res.data) setAlarms(res.data);
-      } catch {
-        setAlarms([{ id: 1, severity: 'critical', message: 'Temperature High', source: 'Trafo', timestamp: new Date(), acknowledged: false }]);
+        else setAlarms([]);
+      } catch (err) {
+        console.error('Error fetching alarms:', err);
+        setAlarms([]);
       }
     };
     fetchAlarms();

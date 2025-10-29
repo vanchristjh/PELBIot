@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { apiService, socketService } from '../services/apiService';
 import './Trafo.css';
@@ -30,14 +30,7 @@ const Trafo = () => {
       } catch (err) {
         console.error('Error fetching transformers:', err);
         setError('Gagal memuat data trafo: ' + (err.response?.statusText || err.message));
-        
-        // Fallback dengan sample data
-        setUnits([
-          { id: 1, name: 'Trafo Unit 1', load: 75, temp: 65, voltage: 380, current: 125, status: 'Active' },
-          { id: 2, name: 'Trafo Unit 2', load: 82, temp: 72, voltage: 380, current: 135, status: 'Active' },
-          { id: 3, name: 'Trafo Unit 3 (Backup)', load: 0, temp: 45, voltage: 0, current: 0, status: 'Standby' }
-        ]);
-        setSelectedUnit(1);
+        setUnits([]);
       } finally {
         setLoading(false);
       }

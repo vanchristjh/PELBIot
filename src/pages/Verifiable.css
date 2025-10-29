@@ -1,9 +1,12 @@
+@import './CommonStyles.css';
+
 /* ========== VERIFIABLE PAGE - SYSTEM VERIFICATION ========== */
 
 .verifiable-page {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  animation: slideUp 0.5s ease-out;
 }
 
 .verifiable-header {
@@ -12,20 +15,23 @@
   border-radius: 16px;
   padding: 28px 24px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(0, 212, 255, 0.1);
+  animation: slideDown 0.6s ease-out;
 }
 
 .verifiable-header h1 {
   font-size: 28px;
   font-weight: 900;
-  color: #00d4ff;
+  color: var(--primary-color);
   text-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
   margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
 }
 
 .verifiable-header p {
   font-size: 14px;
-  color: #a8b8c8;
+  color: var(--text-tertiary);
   margin: 0;
+  font-weight: 500;
 }
 
 /* Verification Stats */
@@ -46,6 +52,13 @@
   gap: 12px;
   text-align: center;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: var(--transition-normal);
+  animation: slideUp 0.5s ease-out;
+}
+
+.stat:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 212, 255, 0.25);
 }
 
 .stat.verified {
@@ -53,14 +66,26 @@
   border-color: rgba(0, 255, 136, 0.25);
 }
 
+.stat.verified:hover {
+  box-shadow: 0 12px 32px rgba(0, 255, 136, 0.25);
+}
+
 .stat.pending {
   background: linear-gradient(135deg, rgba(255, 195, 0, 0.12), rgba(255, 195, 0, 0.05));
   border-color: rgba(255, 195, 0, 0.25);
 }
 
+.stat.pending:hover {
+  box-shadow: 0 12px 32px rgba(255, 195, 0, 0.25);
+}
+
 .stat.failed {
   background: linear-gradient(135deg, rgba(255, 51, 51, 0.12), rgba(255, 51, 51, 0.05));
   border-color: rgba(255, 51, 51, 0.25);
+}
+
+.stat.failed:hover {
+  box-shadow: 0 12px 32px rgba(255, 51, 51, 0.25);
 }
 
 .stat.total {
@@ -81,7 +106,7 @@
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #a8b8c8;
+  color: var(--text-tertiary);
   letter-spacing: 0.5px;
 }
 
@@ -93,7 +118,7 @@
 .stat.verified .value { color: #00ff88; }
 .stat.pending .value { color: #ffc300; }
 .stat.failed .value { color: #ff3333; }
-.stat.total .value { color: #00d4ff; }
+.stat.total .value { color: var(--primary-color); }
 
 /* Verification List */
 .verification-list {

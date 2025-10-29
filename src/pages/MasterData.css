@@ -1,4 +1,157 @@
-﻿.masterdata-container { padding: 20px; background: #1a1f3a; color: white; }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 10px; text-align: left; border-bottom: 1px solid #333; }
-th { background: #2a3f5f; }
+﻿/* ========== MASTER DATA PAGE - PROFESSIONAL DATA MANAGEMENT ========== */
+
+@import './CommonStyles.css';
+
+.masterdata-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0;
+  min-height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.6s ease-out;
+}
+
+.masterdata-header {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(0, 212, 255, 0.05));
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(0, 212, 255, 0.1);
+}
+
+.masterdata-header h1 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #00d4ff;
+  text-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
+  margin: 0 0 12px 0;
+  letter-spacing: -0.5px;
+}
+
+.masterdata-header p {
+  font-size: 14px;
+  color: #a8b8c8;
+  margin: 0;
+  font-weight: 500;
+}
+
+.masterdata-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.masterdata-container {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 212, 255, 0.02) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  overflow-x: auto;
+}
+
+.masterdata-container table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+.masterdata-container thead {
+  background: linear-gradient(90deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.08));
+  border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+}
+
+.masterdata-container th {
+  padding: 16px 14px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+  color: #00d4ff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-right: 1px solid rgba(0, 212, 255, 0.15);
+}
+
+.masterdata-container th:last-child {
+  border-right: none;
+}
+
+.masterdata-container tbody tr {
+  border-bottom: 1px solid rgba(0, 212, 255, 0.08);
+  transition: all 0.2s ease-in-out;
+}
+
+.masterdata-container tbody tr:hover {
+  background: rgba(0, 212, 255, 0.08);
+  box-shadow: inset 0 0 12px rgba(0, 212, 255, 0.05);
+}
+
+.masterdata-container tbody tr:last-child {
+  border-bottom: none;
+}
+
+.masterdata-container td {
+  padding: 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  border-right: 1px solid rgba(0, 212, 255, 0.08);
+}
+
+.masterdata-container td:last-child {
+  border-right: none;
+}
+
+.masterdata-container td.text-bold {
+  color: #00d4ff;
+  font-weight: 800;
+}
+
+.masterdata-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.action-btn {
+  padding: 8px 12px;
+  background: rgba(0, 212, 255, 0.1);
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-btn:hover {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: #00d4ff;
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+}
+
+.action-btn.edit { color: #00d4ff; }
+.action-btn.delete { color: #ff9a9a; border-color: rgba(255, 51, 51, 0.3); }
+.action-btn.delete:hover { background: rgba(255, 51, 51, 0.1); border-color: #ff9a9a; }
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+@media (max-width: 768px) {
+  .masterdata-container {
+    padding: 16px;
+  }
+
+  .masterdata-container th,
+  .masterdata-container td {
+    padding: 12px 10px;
+    font-size: 12px;
+  }
+}
+

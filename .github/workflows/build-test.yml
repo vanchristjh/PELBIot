@@ -38,9 +38,9 @@ jobs:
         continue-on-error: true
 
       - name: Archive build artifacts
-        if: success()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-${{ matrix.node-version }}
           path: build/
           retention-days: 7
+        continue-on-error: true

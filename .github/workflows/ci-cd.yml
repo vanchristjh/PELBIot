@@ -162,28 +162,14 @@ jobs:
       run: npm run lint --if-present || true
       continue-on-error: true
 
-  # Deployment
+  # Deployment (Disabled - use separate deploy.yml with workflow_dispatch)
   deploy:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: false  # Disabled - use manual trigger in deploy.yml instead
     needs: [docker-build, security-scan]
     
     steps:
     - uses: actions/checkout@v3
     
-    - name: Deploy to server
-      env:
-        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-      run: |
-        mkdir -p ~/.ssh
-        echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
-        chmod 600 ~/.ssh/deploy_key
-        ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
-        ssh -i ~/.ssh/deploy_key $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
-          cd /home/$DEPLOY_USER/pelbiot
-          docker-compose pull
-          docker-compose up -d
-        EOF
-      if: secrets.DEPLOY_KEY != ''
+    - name: Deployment disabled
+      run: echo "Use deploy.yml with workflow_dispatch for manual deployment"

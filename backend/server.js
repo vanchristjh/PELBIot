@@ -20,6 +20,7 @@ import systemRoutes from './routes/system.js';
 import masterDataRoutes from './routes/masterData.js';
 import notificationRoutes from './routes/notifications.js';
 import alertManagementRoutes from './routes/alertManagement.js';
+import sensorRoutes from './routes/sensors.js';
 import mqttRoutes, { setMQTTService } from './routes/mqtt.js';
 
 // Utils
@@ -30,6 +31,7 @@ import emailService from './utils/emailService.js';
 
 // MQTT Service
 import MQTTService from './services/mqttService.js';
+import SensorConnectionManager from './services/sensorConnectionManager.js';
 
 // Security Middleware
 import {
@@ -85,6 +87,18 @@ try {
 } catch (error) {
   console.warn(`⚠️  MQTT initialization failed: ${error.message}`);
   console.log('   Backend will continue without MQTT - Socket.IO only');
+}
+
+// ===== Initialize Sensor Connection Manager =====
+let sensorConnectionManager = null;
+try {
+  sensorConnectionManager = new SensorConnectionManager();
+  // Expose to app for controllers to access
+  app.locals.sensorConnectionManager = sensorConnectionManager;
+  console.log('✅ Sensor Connection Manager Initialized');
+} catch (error) {
+  console.error(`❌ Sensor Connection Manager initialization failed: ${error.message}`);
+  console.log('   Sensor integration will not be available');
 }
 
 // ===== Initialize Sentry for Error Tracking =====
@@ -183,6 +197,7 @@ app.use('/api/system', systemRoutes);
 app.use('/api/master-data', masterDataRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/alert-management', alertManagementRoutes);
+app.use('/api/sensors', sensorRoutes);
 
 // MQTT Routes
 if (mqttService) {

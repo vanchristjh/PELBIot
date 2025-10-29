@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth, useRoleCheck } from '../contexts/AuthContext';
+import SensorManagement from '../components/admin/SensorManagement';
 import './AdminPanel.css';
 
 const AdminPanel = () => {
@@ -305,6 +306,12 @@ const AdminPanel = () => {
           ) : (
             <p className="no-data">Tidak ada pengguna terdaftar</p>
           )}
+        </div>
+
+        {/* Section: Sensor Management */}
+        <div className="admin-section">
+          <h2>📡 Manajemen Sensor IoT</h2>
+          <SensorManagement />
         </div>
 
         {/* Section: Info Admin */}

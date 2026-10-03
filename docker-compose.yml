@@ -1,7 +1,7 @@
 services:
   # ===== MySQL Database Service =====
   mysql:
-    image: mysql:8.0-alpine
+    image: mysql:8.0
     container_name: pelbiot-mysql
     restart: unless-stopped
     environment:
@@ -118,15 +118,14 @@ services:
       - logs:/app/logs
     
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/health',r=>{if(r.statusCode!==200)throw new Error(r.statusCode)}).on('error',()=>process.exit(1))"]
       timeout: 10s
       retries: 5
-      interval: 30s
+      interval: 10s
+      start_period: 20s
     
     networks:
       - pelbiot_network
-    
-    restart: unless-stopped
     
     # Resource limits
     deploy:

@@ -412,7 +412,7 @@ export const generateCSVReport = async (deviceId, startDate, endDate, reportType
       csvContent = 'Date,Average Power,Max Power,Min Power,Average Energy,Average Temperature,Average Load\n';
       const trends = await query(
         `SELECT DATE(created_at) as trend_date, AVG(power) as avg_power, MAX(power) as max_power, 
-         MIN(power) as min_power, AVG(energy) as avg_energy, AVG(temperature) as avg_temp, AVG(load) as avg_load
+         MIN(power) as min_power, AVG(energy) as avg_energy, AVG(temperature) as avg_temp, AVG(\`load\`) as avg_load
          FROM trends WHERE device_id = ? AND DATE(created_at) BETWEEN ? AND ? GROUP BY DATE(created_at)`,
         [deviceId, startDate, endDate]
       );

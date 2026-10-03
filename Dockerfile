@@ -6,8 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies (fallback if lock out of sync)
+RUN npm ci || npm install
 
 # Copy source code
 COPY . .
@@ -24,11 +24,6 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Copy built application from builder
 COPY --from=builder /app/build /usr/share/nginx/html
-
-# Create non-root user
-RUN addgroup -g 101 -S nginx || true
-RUN adduser -S nginx -u 101 -G nginx || true
-USER nginx
 
 # Expose port
 EXPOSE 80

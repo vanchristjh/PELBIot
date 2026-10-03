@@ -15,5 +15,5 @@ build
 *.swo
 .yarn
 .pnp
-public/index.html
-src/setupTests.js
+backend
+coverage

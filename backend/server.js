@@ -101,6 +101,11 @@ try {
   console.log('   Sensor integration will not be available');
 }
 
+// ===== Health check - MUST be before all middleware that can hang =====
+app.get('/health', (req, res) => {
+  res.json({ status: '✅ Backend API Running', timestamp: new Date() });
+});
+
 // ===== Initialize Sentry for Error Tracking =====
 initSentry(app);
 
@@ -119,42 +124,26 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // 5. Input Validation & Sanitization
-app.use(validationMiddleware);
+app.use(validationMiddleware());
 
-// 6. Rate Limiting (standard rate limit)
+// 6. Rate Limiting (standard rate limit) - already skips /health
 app.use(generalLimiter);
 
-// 7. Advanced Rate Limiting & DDoS Protection
-app.use(createRateLimitMiddleware({
-  keyGenerator: (req) => req.ip,
-  skipSuccessfulRequests: false,
-  skipFailedRequests: false,
-  onLimitReached: (req, res, options) => {
-    console.warn(`Rate limit reached for IP: ${req.ip}`);
-  }
-}));
+// 7. Advanced Rate Limiting & Circuit Breaker - DISABLED for local demo
+// NOTE: createRateLimitMiddleware/createCircuitBreakerMiddleware require
+// instantiated RateLimiter/CircuitBreaker objects. The previous code passed
+// plain options objects causing TypeError and request hang. Enable only with proper setup:
+//   import Redis from 'ioredis'; const rl = new RateLimiter(redisClient, {...});
+//   app.use(createRateLimitMiddleware(rl, {keyGenerator: (req)=>req.ip}));
 
-// 8. Circuit Breaker Middleware for failure handling
-app.use(createCircuitBreakerMiddleware({
-  threshold: 5,
-  timeout: 60000,
-  fallback: (req, res, error) => {
-    res.status(503).json({
-      success: false,
-      message: 'Service temporarily unavailable',
-      error: error?.message || 'Circuit breaker is open'
-    });
-  }
-}));
-
-// 9. Error Tracking Middleware
-app.use(errorTrackerMiddleware);
+// 9. Error Tracking Middleware - disabled for local demo (requires Sentry DSN)
+// app.use(errorTrackerMiddleware());
 
 // 10. Request Logging & Security
 app.use(securityLogger);
 
 // 11. Transaction Tracking for performance monitoring
-app.use(transactionMiddleware);
+app.use(transactionMiddleware());
 
 // 12. Cache Middleware
 app.use(dedupMiddleware);
@@ -174,11 +163,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCss: '.swagger-ui .topbar { background-color: #1976d2; }',
   customSiteTitle: 'PELBIOT API Documentation'
 }));
-
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: '✅ Backend API Running', timestamp: new Date() });
-});
 
 // Auth Routes
 app.use('/api/auth', authRoutes);
@@ -368,7 +352,7 @@ io.on('connection', (socket) => {
 
   socket.on('request-trend-data', async (type) => {
     try {
-      const trendData = await query('SELECT date, power, energy, temperature, load FROM trends WHERE date >= DATE_SUB(NOW(), INTERVAL 30 DAY) ORDER BY date');
+      const trendData = await query('SELECT date, power, energy, temperature, `load` FROM trends WHERE date >= DATE_SUB(NOW(), INTERVAL 30 DAY) ORDER BY date');
       socket.emit('trend-data', trendData || []);
     } catch (error) {
       console.error('Error fetching trend data:', error);

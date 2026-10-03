@@ -67,7 +67,7 @@ const seedDatabase = async () => {
     ];
 
     for (const w of weather) {
-      await query('INSERT INTO weather (device_id, temperature, humidity, pressure, wind_speed, condition) VALUES (?, ?, ?, ?, ?, ?)', w);
+      await query('INSERT INTO weather (device_id, temperature, humidity, pressure, wind_speed, `condition`) VALUES (?, ?, ?, ?, ?, ?)', w);
     }
     console.log(`✅ Added weather data`);
 
@@ -91,7 +91,7 @@ const seedDatabase = async () => {
       date.setDate(date.getDate() - i);
       const power = 50000 + Math.random() * 10000;
       const energy = power * 24;
-      await query('INSERT INTO trends (device_id, date, power, energy, temperature, load) VALUES (?, ?, ?, ?, ?, ?)', [deviceIds[0], date, power, energy, 25 + Math.random() * 10, 60 + Math.random() * 20]);
+      await query('INSERT INTO trends (device_id, date, power, energy, temperature, `load`) VALUES (?, ?, ?, ?, ?, ?)', [deviceIds[0], date, power, energy, 25 + Math.random() * 10, 60 + Math.random() * 20]);
     }
     console.log(`✅ Added 30 days of trend data`);
 
@@ -99,7 +99,7 @@ const seedDatabase = async () => {
     console.log('📈 Adding load profile data...');
     for (let h = 0; h < 24; h++) {
       const load = 30000 + Math.sin(h / 12) * 20000;
-      await query('INSERT INTO load_profiles (device_id, hour, load, peak, average) VALUES (?, ?, ?, ?, ?)', [deviceIds[0], h, load, 60000, 50000]);
+      await query('INSERT INTO load_profiles (device_id, hour, `load`, peak, average) VALUES (?, ?, ?, ?, ?)', [deviceIds[0], h, load, 60000, 50000]);
     }
     console.log(`✅ Added 24-hour load profile`);
 

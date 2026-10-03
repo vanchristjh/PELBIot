@@ -65,8 +65,8 @@ export const getLoadTrend = async (req, res) => {
     const trends = await query(`
       SELECT 
         DATE(created_at) as date,
-        AVG(load) as load,
-        MAX(load) as peak_load
+        AVG(\`load\`) as \`load\`,
+        MAX(\`load\`) as peak_load
       FROM trends
       WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
       GROUP BY DATE(created_at)

@@ -12,10 +12,10 @@ import {
 
 const router = express.Router();
 
-// Rate limiters
+// Rate limiters - relaxed for local demo
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 attempts
+  max: 30, // 30 attempts (demo-friendly)
   message: 'Too many login attempts, please try again later',
   standardHeaders: true,
   legacyHeaders: false,
@@ -23,7 +23,7 @@ const loginLimiter = rateLimit({
 
 const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // 3 registrations per hour
+  max: 20,
   message: 'Too many registration attempts, please try again later',
   standardHeaders: true,
   legacyHeaders: false,

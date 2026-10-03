@@ -6,7 +6,7 @@ export const getLoadProfileHistory = async (req, res) => {
     const profiles = await query(`
       SELECT 
         hour,
-        AVG(load) as load,
+        AVG(\`load\`) as \`load\`,
         MAX(peak) as peak,
         AVG(average) as average
       FROM load_profiles

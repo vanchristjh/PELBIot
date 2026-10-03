@@ -1,7 +1,7 @@
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
 
-dotenv.config();
+if (!process.env.REDIS_HOST) dotenv.config();
 
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',

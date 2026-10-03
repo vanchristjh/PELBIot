@@ -1,9 +1,12 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-const JWT_EXPIRY = '24h';
+const getJwtSecret = () => process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const getJwtExpiry = () => process.env.JWT_EXPIRE || process.env.JWT_EXPIRY || '24h';
 
 /**
  * Hash a password
@@ -42,7 +45,7 @@ export const comparePassword = async (password, hash) => {
  */
 export const generateToken = (payload) => {
   try {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+    return jwt.sign(payload, getJwtSecret(), { expiresIn: getJwtExpiry() });
   } catch (error) {
     console.error('Error generating token:', error);
     throw new Error('Token generation failed');
@@ -56,7 +59,7 @@ export const generateToken = (payload) => {
  */
 export const verifyToken = (token) => {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, getJwtSecret());
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       throw new Error('Token has expired');

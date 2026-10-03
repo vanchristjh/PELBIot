@@ -11,16 +11,8 @@ class SerialConnectionService {
     this.connectionConfig = null;
     this.serialPort = null;
 
-    // Try to import serialport
-    try {
-      const SerialPort = require('serialport');
-      const { ReadlineParser } = require('@serialport/parser-readline');
-      this.SerialPort = SerialPort;
-      this.ReadlineParser = ReadlineParser;
-      console.log('✅ SerialPort library loaded');
-    } catch (error) {
-      console.warn('⚠️  serialport not installed. Run: npm install serialport');
-    }
+    // Try to import serialport (optional - lazy loaded via ESM dynamic import when connecting)
+    console.warn('⚠️  serialport is optional for hardware Serial. ESM dynamic import used when connecting.');
   }
 
   /**

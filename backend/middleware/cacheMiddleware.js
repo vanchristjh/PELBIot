@@ -258,16 +258,20 @@ export const cacheWarmer = async () => {
  * Periodic cache cleanup
  * Removes expired entries that Redis didn't clean up
  */
-export const cacheCleanup = setInterval(async () => {
-  try {
-    const stats = await cacheService.getStats();
-    if (stats) {
-      console.log(`📊 Cache stats: ${stats.totalKeys} keys in database`);
+export const cacheCleanup = (() => {
+  const t = setInterval(async () => {
+    try {
+      const stats = await cacheService.getStats();
+      if (stats) {
+        console.log(`Cache stats: ${stats.totalKeys} keys in database`);
+      }
+    } catch (error) {
+      console.error('Cache cleanup error:', error.message);
     }
-  } catch (error) {
-    console.error('Cache cleanup error:', error.message);
-  }
-}, 60000); // Run every minute
+  }, 60000);
+  if (t.unref) t.unref();
+  return t;
+})();
 
 const cacheMiddlewareExports = {
   dedupMiddleware,

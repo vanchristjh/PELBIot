@@ -41,10 +41,8 @@ const config = {
   // Setup files
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
 
-  // Transform files
-  transform: {
-    '^.+\\.js$': ['babel-jest', { rootMode: 'upward' }],
-  },
+  // Transform files (babel-jest provided via react-scripts)
+  transform: {}
 
   // Test timeout
   testTimeout: 10000,

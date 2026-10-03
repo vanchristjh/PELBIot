@@ -262,30 +262,36 @@ export const validateAgainstSchema = (data, schema) => {
 export const validationMiddleware = () => {
   return (req, res, next) => {
     try {
-      // Sanitize query params
+      // Sanitize query params in-place (Express 5 makes req.query/params getters)
       if (req.query && Object.keys(req.query).length > 0) {
-        req.query = sanitizeObject(req.query);
+        const sanitized = sanitizeObject(req.query);
+        for (const k of Object.keys(req.query)) delete req.query[k];
+        Object.assign(req.query, sanitized);
       }
-      
+
       // Sanitize request body
-      if (req.body && Object.keys(req.body).length > 0) {
-        req.body = sanitizeObject(req.body);
+      if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
+        const sanitized = sanitizeObject(req.body);
+        for (const k of Object.keys(req.body)) delete req.body[k];
+        Object.assign(req.body, sanitized);
       }
-      
-      // Sanitize params
+
+      // Sanitize params in-place
       if (req.params && Object.keys(req.params).length > 0) {
-        req.params = sanitizeObject(req.params);
+        const sanitized = sanitizeObject(req.params);
+        for (const k of Object.keys(req.params)) delete req.params[k];
+        Object.assign(req.params, sanitized);
       }
-      
+
       // Log sanitization info
       req.sanitized = true;
-      
+
       next();
     } catch (error) {
       console.error('Validation middleware error:', error);
-      res.status(400).json({ 
+      res.status(400).json({
         error: 'Invalid input detected',
-        message: error.message 
+        message: error.message
       });
     }
   };

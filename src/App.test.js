@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders login page by default', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  // App defaults to /login route when unauthenticated
+  const loginHeading = screen.getByText(/login/i);
+  expect(loginHeading).toBeInTheDocument();
 });

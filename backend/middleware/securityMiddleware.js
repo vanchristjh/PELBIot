@@ -119,21 +119,25 @@ export const corsOptions = {
 
 // Log security events middleware
 export const securityLogger = (req, res, next) => {
-  const originalSend = res.send;
+  const originalSend = res.send.bind(res);
+  const originalJson = res.json.bind(res);
+
+  const logOnce = () => {
+    if (req.path.includes('/auth') || req.path.includes('/login')) {
+      console.log(`Auth Event: ${req.method} ${req.path} - Status: ${res.statusCode}`);
+    }
+    if (res.statusCode >= 400) {
+      console.log(`Security Event: ${req.method} ${req.path} - Status: ${res.statusCode} - IP: ${req.ip}`);
+    }
+  };
 
   res.send = function (data) {
-    // Log auth attempts
-    if (req.path.includes('/auth') || req.path.includes('/login')) {
-      console.log(`🔐 Auth Event: ${req.method} ${req.path} - Status: ${res.statusCode}`);
-    }
-
-    // Log failed requests
-    if (res.statusCode >= 400) {
-      console.log(`⚠️ Security Event: ${req.method} ${req.path} - Status: ${res.statusCode} - IP: ${req.ip}`);
-    }
-
-    res.send = originalSend;
-    return res.send(data);
+    logOnce();
+    return originalSend(data);
+  };
+  res.json = function (data) {
+    logOnce();
+    return originalJson(data);
   };
 
   next();

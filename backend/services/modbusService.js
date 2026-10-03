@@ -10,13 +10,9 @@ class ModbusConnectionService {
     this.connectionConfig = null;
     this.modbusSerial = null;
     
-    // Try to import modbus-serial
-    try {
-      this.modbusSerial = require('modbus-serial');
-      console.log('✅ Modbus-serial library loaded');
-    } catch (error) {
-      console.warn('⚠️  modbus-serial not installed. Run: npm install modbus-serial');
-    }
+    // Try to import modbus-serial (optional - lazy loaded)
+    // Use dynamic import compatible with ESM: import() if available, else skip
+    console.warn('⚠️  modbus-serial is optional for hardware Modbus. ESM dynamic import used when connecting.');
   }
 
   /**

@@ -7,19 +7,20 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
-dotenv.config();
+if (!process.env.SMTP_HOST) dotenv.config();
 
-// Initialize Email Transporter
-const transporter = nodemailer.createTransport({
+// Initialize Email Transporter (lazy creation to avoid connecting on import if not configured)
+const getTransporter = () => nodemailer.createTransport({
   service: process.env.SMTP_SERVICE || 'gmail',
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: process.env.SMTP_PORT || 587,
+  port: Number(process.env.SMTP_PORT) || 587,
   secure: process.env.SMTP_SECURE === 'true' || false,
   auth: {
     user: process.env.SMTP_USER || 'your-email@gmail.com',
     pass: process.env.SMTP_PASSWORD || 'your-app-password',
   },
 });
+const transporter = getTransporter();
 
 /**
  * Verify SMTP connection on startup

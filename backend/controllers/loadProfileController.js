@@ -2,18 +2,22 @@ import { query } from '../utils/database.js';
 
 export const getLoadProfileHistory = async (req, res) => {
   try {
-    const { hours = 24 } = req.query;
+    const raw = req.query.hours;
+    let hours = parseInt(raw, 10);
+    if (Number.isNaN(hours)) hours = 24;
+    hours = Math.max(1, Math.min(24, hours));
+    const threshold = 24 - hours;
     const profiles = await query(`
-      SELECT 
+      SELECT
         hour,
         AVG(\`load\`) as \`load\`,
         MAX(peak) as peak,
         AVG(average) as average
       FROM load_profiles
-      WHERE hour >= ? 
+      WHERE hour >= ?
       GROUP BY hour
       ORDER BY hour ASC
-    `, [24 - hours]);
+    `, [threshold]);
     res.json({ success: true, data: profiles });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

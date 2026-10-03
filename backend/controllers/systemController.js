@@ -5,9 +5,9 @@ export const getSystemHealth = async (req, res) => {
     const devices = await query('SELECT COUNT(*) as total, SUM(CASE WHEN status = "online" THEN 1 ELSE 0 END) as online FROM devices');
     const alerts = await query('SELECT COUNT(*) as critical FROM alerts WHERE severity = "critical" AND status = "open"');
     
-    const totalDevices = devices[0].total;
-    const onlineDevices = devices[0].online;
-    const uptime = (onlineDevices / totalDevices) * 100;
+    const totalDevices = Number(devices[0]?.total || 0);
+    const onlineDevices = Number(devices[0]?.online || 0);
+    const uptime = totalDevices > 0 ? (onlineDevices / totalDevices) * 100 : 100;
 
     res.json({
       success: true,

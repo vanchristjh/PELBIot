@@ -1,10 +1,10 @@
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 const socketService = {
   socket: null,
 
   connect() {
-    this.socket = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:3001');
+    this.socket = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000');
     return this.socket;
   },
 
